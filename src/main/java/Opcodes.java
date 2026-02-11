@@ -1,73 +1,109 @@
+import java.util.HashMap;
+import java.util.Map;
+
 public class Opcodes<T> {
 
-    private Stack<T> stack = new Stack<>();
+    private Stack<byte[]> stack = new Stack<>();
+    private Map<String, Runnable> opcodeMap;
+
+    public Opcodes() {
+        this.stack = new Stack<>();
+        this.opcodeMap = new HashMap<>();
+    }
+
+    private void init() {
+        opcodeMap.put("OP_0", this::OP_0);
+        opcodeMap.put("OP_1", this::OP_1);
+        opcodeMap.put("OP_2", this::OP_2);
+        opcodeMap.put("OP_3", this::OP_3);
+        opcodeMap.put("OP_4", this::OP_4);
+        opcodeMap.put("OP_5", this::OP_5);
+        opcodeMap.put("OP_6", this::OP_6);
+        opcodeMap.put("OP_7", this::OP_7);
+        opcodeMap.put("OP_8", this::OP_8);
+        opcodeMap.put("OP_9", this::OP_9);
+        opcodeMap.put("OP_10", this::OP_10);
+        opcodeMap.put("OP_11", this::OP_11);
+        opcodeMap.put("OP_12", this::OP_12);
+        opcodeMap.put("OP_13", this::OP_13);
+        opcodeMap.put("OP_14", this::OP_14);
+        opcodeMap.put("OP_15", this::OP_15);
+        opcodeMap.put("OP_16", this::OP_16);
+        opcodeMap.put("OP_DROP", this::OP_DROP);
+        opcodeMap.put("OP_DUP", this::OP_DUP);
+        opcodeMap.put("OP_EQUAL", this::OP_EQUAL);
+        opcodeMap.put("OP_VERIFY", this::OP_VERIFY);
+        opcodeMap.put("OP_EQVERIFY", this::OP_EQVERIFY);
+        opcodeMap.put("OP_HASH160", this::OP_HASH160);
+        opcodeMap.put("OP_CHECKSIG", this::OP_CHECKSIG);
+    }
 
     public void OP_0() {
-        stack.push((T) Integer.valueOf(0));
+        stack.push(new byte[] { 0 });
     }
 
     public void OP_1() {
-        stack.push((T) Integer.valueOf(1));
+        stack.push(new byte[] { 1 });
     }
 
     public void OP_2() {
-        stack.push((T) Integer.valueOf(2));
+        stack.push(new byte[] { 2 });
     }
 
     public void OP_3() {
-        stack.push((T) Integer.valueOf(3));
+        stack.push(new byte[] { 3 });
     }
 
     public void OP_4() {
-        stack.push((T) Integer.valueOf(4));
+        stack.push(new byte[] { 4 });
     }
 
     public void OP_5() {
-        stack.push((T) Integer.valueOf(5));
+        stack.push(new byte[] { 5 });
     }
 
     public void OP_6() {
-        stack.push((T) Integer.valueOf(6));
+        stack.push(new byte[] { 6 });
     }
 
     public void OP_7() {
-        stack.push((T) Integer.valueOf(7));
+        stack.push(new byte[] { 7 });
     }
 
     public void OP_8() {
-        stack.push((T) Integer.valueOf(8));
+        stack.push(new byte[] { 8 });
     }
 
     public void OP_9() {
-        stack.push((T) Integer.valueOf(9));
+        stack.push(new byte[] { 9 });
     }
 
     public void OP_10() {
-        stack.push((T) Integer.valueOf(10));
+        stack.push(new byte[] { 10 });
     }
 
     public void OP_11() {
-        stack.push((T) Integer.valueOf(11));
+        stack.push(new byte[] { 11 });
     }
 
     public void OP_12() {
-        stack.push((T) Integer.valueOf(12));
+        stack.push(new byte[] { 12 });
     }
 
     public void OP_13() {
-        stack.push((T) Integer.valueOf(13));
+        stack.push(new byte[] { 13 });
     }
 
     public void OP_14() {
-        stack.push((T) Integer.valueOf(14));
+        stack.push(new byte[] { 14 });
     }
 
     public void OP_15() {
-        stack.push((T) Integer.valueOf(15));
+        stack.push(new byte[] { 15 });
     }
 
     public void OP_16() {
-        stack.push((T) Integer.valueOf(16));
+        stack.push(new byte[] { 16 });
     }
 
     public void PUSH_DATA() {
@@ -79,28 +115,39 @@ public class Opcodes<T> {
     }
 
     public void OP_DUP() {
-        T top = stack.pop();
+        byte[] top = (byte[]) stack.pop();
         stack.push(top);
         stack.push(top);
     }
 
     public void OP_EQUAL() {
-        T a = stack.pop();
-        T b = stack.pop();
-        if (a.equals(b)) {
-            stack.push((T) Boolean.TRUE);
+        byte[] a = stack.pop();
+        byte[] b = stack.pop();
+        if (java.util.Arrays.equals(a, b)) {
+            stack.push(new byte[] { 1 });
         } else {
-            stack.push((T) Boolean.FALSE);
+            stack.push(new byte[] { 0 });
         }
     }
 
     public boolean OP_VERIFY() {
-        T top = stack.pop();
-        if (top == Boolean.TRUE) {
+        byte[] top = stack.pop();
+        if (top.length == 1 && top[0] == 1) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public boolean OP_EQVERIFY() {
+        OP_EQUAL();
+        return OP_VERIFY();
+    }
+
+    public void OP_HASH160() {
+    }
+
+    public void OP_CHECKSIG() {
     }
 
 }
