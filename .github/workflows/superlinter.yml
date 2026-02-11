@@ -1,0 +1,26 @@
+name: Java CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Compilar con Javac
+      run: |
+        mkdir -p bin
+        javac -d bin $(find src -name "*.java")
+        
+    # Implementación de pruebas unitarias con JUnit (después)
+    # - name: Correr Pruebas
+    #   run: java -cp bin:lib/* org.junit.runner.JUnitCore ClaseDeTests
