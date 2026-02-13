@@ -9,6 +9,7 @@ public class Opcodes<T> {
     public Opcodes() {
         this.stack = new Stack<>();
         this.opcodeMap = new HashMap<>();
+        init();
     }
 
     private void init() {
@@ -148,6 +149,16 @@ public class Opcodes<T> {
     }
 
     public void OP_CHECKSIG() {
+    }
+
+    public boolean execute(String token) {
+        Runnable operation = opcodeMap.get(token);
+        if (operation != null) {
+            operation.run();
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
