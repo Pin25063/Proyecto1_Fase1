@@ -21,4 +21,8 @@ public class Stack<T> {
     public boolean isEmpty() {
         return stack.isEmpty();
     }
+
+    public void clear() {
+        stack.clear();
+    }
 }

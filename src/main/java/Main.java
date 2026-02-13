@@ -9,7 +9,13 @@ public class Main {
 
             for (String script : scripts) {
                 if (!script.trim().isEmpty()) {
-                    interprete.execute(script);
+                    //validación final temporal
+                    if (interprete.execute(script)) {
+                        System.out.println("Script válido");
+                    } else {
+                        System.out.println("Script inválido");
+                    }
+
                 }
             }
         } catch (IOException e) {

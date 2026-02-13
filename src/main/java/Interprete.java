@@ -9,21 +9,29 @@ public class Interprete {
 
     public boolean execute(String script) {
 
+        stack.clear();
         String[] instructions = script.trim().split("\\s+");
 
         for (String instruction : instructions) {
+            System.out.println("Ejecutando: " + instruction);
             if (isHex(instruction)) {
                 byte[] data = hexToBytes(instruction);
                 stack.push(data);
             } else if (vm.execute(instruction)) {
-
+                //ejecuta el OP
             } else {
                 System.out.println("Instrucción inválida: " + instruction);
+                return false;
             }
-            return false;
+
         }
 
-        return true;
+        //validacion final temporal
+        if (stack.isEmpty()) {
+            return false;
+        }
+        byte[] top = stack.pop();
+        return top.length == 1 && top[0] != 0;
     }
 
     private boolean isHex(String instruction) {
@@ -37,9 +45,10 @@ public class Interprete {
         byte[] data = new byte[len/2];
 
         for (int i = 0; i < len; i +=2) {
-            data[i / 2] = (byte) Integer.parseInt(hex.substring(1, 1+2), 16);
+            data[i / 2] = (byte) Integer.parseInt(hex.substring(i, i+2), 16);
         }
         return data;
     }
+
 }
 
