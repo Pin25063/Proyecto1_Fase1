@@ -1,6 +1,11 @@
 public class Interprete {
-    private Stack<byte[]> stack = new Stack<>();
-    private Opcodes<byte[]> vm = new Opcodes<>();
+    private Stack<byte[]> stack;
+    private Opcodes<byte[]> vm;
+
+    public Interprete() {
+        this.stack = new Stack<>();
+        this.vm = new Opcodes<>(stack);
+    }
     
 
     public boolean execute(String operation) {

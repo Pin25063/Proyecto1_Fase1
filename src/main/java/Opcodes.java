@@ -3,11 +3,11 @@ import java.util.Map;
 
 public class Opcodes<T> {
 
-    private Stack<byte[]> stack = new Stack<>();
+    private Stack<byte[]> stack;
     private Map<String, Runnable> opcodeMap;
 
-    public Opcodes() {
-        this.stack = new Stack<>();
+    public Opcodes(Stack<byte[]> stack) {
+        this.stack = stack; //utiliza la pila del intérprete
         this.opcodeMap = new HashMap<>();
         init();
     }
