@@ -22,5 +22,5 @@ jobs:
         javac -d bin $(find src -name "*.java")
         
     # Implementación de pruebas unitarias con JUnit (después)
-    # - name: Correr Pruebas
-    #   run: java -cp bin:lib/* org.junit.runner.JUnitCore ClaseDeTests
+    - name: Correr Pruebas
+      run: java -cp bin:lib/* org.junit.runner.JUnitCore ClaseDeTests
