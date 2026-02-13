@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
     - uses: actions/checkout@v3
     
     - name: Set up JDK 25
@@ -16,11 +15,18 @@ jobs:
         java-version: '25'
         distribution: 'temurin'
         
-    - name: Compilar con Javac
+    # PASO NUEVO: Descargamos JUnit y Hamcrest (necesario para JUnit)
+    - name: Download Dependencies
+      run: |
+        mkdir -p lib
+        wget -O lib/junit-4.13.2.jar https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar
+        wget -O lib/hamcrest-core-1.3.jar https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+
+    - name: Compile with Javac
       run: |
         mkdir -p bin
-        javac -d bin $(find src -name "*.java")
+        # Agregamos -cp "lib/*" para que javac use los jars que acabamos de bajar
+        javac -d bin -cp "lib/*" $(find src -name "*.java")
         
-    # Implementación de pruebas unitarias con JUnit (después)
     - name: Correr Pruebas
-      run: java -cp bin:lib/* org.junit.runner.JUnitCore FileHelperTest
+      run: java -cp "bin:lib/*" org.junit.runner.JUnitCore FileHelperTest
