@@ -34,7 +34,7 @@ public class Opcodes<T> {
         opcodeMap.put("OP_DUP", this::OP_DUP);
         opcodeMap.put("OP_EQUAL", this::OP_EQUAL);
         opcodeMap.put("OP_VERIFY", this::OP_VERIFY);
-        opcodeMap.put("OP_EQVERIFY", this::OP_EQVERIFY);
+        opcodeMap.put("OP_EQUALVERIFY", this::OP_EQUALVERIFY);
         opcodeMap.put("OP_HASH160", this::OP_HASH160);
         opcodeMap.put("OP_CHECKSIG", this::OP_CHECKSIG);
     }
@@ -140,7 +140,7 @@ public class Opcodes<T> {
         }
     }
 
-    public boolean OP_EQVERIFY() {
+    public boolean OP_EQUALVERIFY() {
         OP_EQUAL();
         return OP_VERIFY();
     }

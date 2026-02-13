@@ -1,13 +1,16 @@
 import java.io.IOException;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         try {
-            String datos = FileHelper.readFile("src/main/resources/data/Datos.txt");
-            String[] instructions = datos.trim().split("\\s+");
+            List<String> scripts = FileHelper.readFile("src/main/resources/data/Datos.txt");
             Interprete interprete = new Interprete();
 
-            for (String operation : instructions) {
-                interprete.execute(operation);
+            for (String script : scripts) {
+                if (!script.trim().isEmpty()) {
+                    interprete.execute(script);
+                }
             }
         } catch (IOException e) {
             System.out.println("Error al leer el archivo: " + e.getMessage());

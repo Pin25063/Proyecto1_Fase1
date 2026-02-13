@@ -7,20 +7,23 @@ public class Interprete {
         this.vm = new Opcodes<>(stack);
     }
 
-    public boolean execute(String operation) {
+    public boolean execute(String script) {
 
-        if (isHex(operation)) {
-            byte[] data = hexToBytes(operation);
-            stack.push(data);
-            return true;
+        String[] instructions = script.trim().split("\\s+");
+
+        for (String instruction : instructions) {
+            if (isHex(instruction)) {
+                byte[] data = hexToBytes(instruction);
+                stack.push(data);
+            } else if (vm.execute(instruction)) {
+
+            } else {
+                System.out.println("Instrucción inválida: " + instruction);
+            }
+            return false;
         }
 
-        if (vm.execute(operation)) {
-            return true;
-        }
-
-        System.out.println("Instrucción inválida: " + operation);
-        return false;
+        return true;
     }
 
     private boolean isHex(String instruction) {
