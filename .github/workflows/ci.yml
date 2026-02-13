@@ -23,4 +23,4 @@ jobs:
         
     # Implementación de pruebas unitarias con JUnit (después)
     - name: Correr Pruebas
-      run: java -cp bin:lib/* org.junit.runner.JUnitCore ClaseDeTests
+      run: java -cp bin:lib/* org.junit.runner.JUnitCore FileHelperTest
