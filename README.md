@@ -1,6 +1,6 @@
 # Proyecto 1 - Grupo
 
-- Valeria Hernández - 25086 
-- Sergio López - 25848
-- Jose Pinto - 25063
-- Carlos Pozuelos - 25104
+- Valeria Hernández - 25086 (vaalss)
+- Sergio López - 25848 (S3rgi07)
+- Jose Pinto - 25063 (Pin25063)
+- Carlos Pozuelos - 25104 (DarkFox90)
