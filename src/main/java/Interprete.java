@@ -25,7 +25,7 @@ public class Interprete {
                 String token = tokens.get(i);
 
                 // --- 1. LÓGICA PUSHDATA ---
-                if (token.equals("PUSHDATA")) { // O "PUSHDATA1"
+                if (token.equals("PUSHDATA")) {
                     if (i + 1 >= tokens.size())
                         return false;
 
@@ -90,7 +90,6 @@ public class Interprete {
         return instruction.startsWith("<") && instruction.endsWith(">");
     }
 
-    // LÓGICA V2 CORREGIDA (Maneja impares como <F>)
     private byte[] hexToBytes(String instruction) {
         String hex = instruction.substring(1, instruction.length() - 1); // ignora "<>"
 

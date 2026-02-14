@@ -116,12 +116,18 @@ public class Opcodes<T> {
     }
 
     public void OP_DUP() {
+        if (stack.isEmpty()) {
+            throw new RuntimeException("El stack está vacío");
+        }
         byte[] top = (byte[]) stack.pop();
         stack.push(top);
         stack.push(top);
     }
 
     public void OP_EQUAL() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para igualar");
+        }
         byte[] a = stack.pop();
         byte[] b = stack.pop();
         if (java.util.Arrays.equals(a, b)) {
@@ -131,24 +137,32 @@ public class Opcodes<T> {
         }
     }
 
-    public boolean OP_VERIFY() {
+    public void OP_VERIFY() {
+        if (stack.isEmpty())
+            throw new RuntimeException("Stack vacío en OP_VERIFY");
+
         byte[] top = stack.pop();
-        if (top.length == 1 && top[0] == 1) {
-            return true;
-        } else {
-            return false;
+
+        // Si es vacío o es [0], fallamos.
+        boolean esFalse = (top.length == 0) || (top.length == 1 && top[0] == 0);
+
+        if (esFalse) {
+            // AL LANZAR EXCEPCIÓN, EL INTÉRPRETE SE DETIENE Y DEVUELVE FALSE
+            throw new RuntimeException("OP_VERIFY falló: Tope de pila era falso");
         }
+        // Si es verdadero, no hace nada y el programa sigue (que es lo correcto)
     }
 
-    public boolean OP_EQUALVERIFY() {
+    public void OP_EQUALVERIFY() {
         OP_EQUAL();
-        return OP_VERIFY();
+        OP_VERIFY();
     }
 
     public void OP_HASH160() {
     }
 
     public void OP_CHECKSIG() {
+
     }
 
     public boolean execute(String token) {
