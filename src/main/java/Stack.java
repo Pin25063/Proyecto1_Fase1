@@ -25,4 +25,11 @@ public class Stack<T> {
     public void clear() {
         stack.clear();
     }
+
+    public T peek() {
+        if (stack.isEmpty()) {
+            throw new RuntimeException("Stack is empty");
+        }
+        return stack.get(stack.size() - 1);
+    }
 }

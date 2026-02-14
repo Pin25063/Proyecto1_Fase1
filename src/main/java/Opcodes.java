@@ -7,7 +7,7 @@ public class Opcodes<T> {
     private Map<String, Runnable> opcodeMap;
 
     public Opcodes(Stack<byte[]> stack) {
-        this.stack = stack; //utiliza la pila del intérprete
+        this.stack = stack; // utiliza la pila del intérprete
         this.opcodeMap = new HashMap<>();
         init();
     }
