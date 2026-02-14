@@ -162,7 +162,24 @@ public class Opcodes<T> {
     }
 
     public void OP_CHECKSIG() {
+        if (stack.size() < 2) {
+             stack.push(new byte[0]);
+             return;
+        }
+        
+        byte[] pubKey = stack.pop();
+        byte[] signature = stack.pop();
 
+        
+        String pubKeyStr = bytesToHex(pubKey);
+        String sigStr = bytesToHex(signature);
+
+        
+        if (sigStr.contains(pubKeyStr)) {
+            stack.push(new byte[]{1}); 
+        } else {
+            stack.push(new byte[0]);   
+        }
     }
 
     public boolean execute(String token) {
