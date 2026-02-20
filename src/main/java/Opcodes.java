@@ -107,10 +107,6 @@ public class Opcodes<T> {
         stack.push(new byte[] { 16 });
     }
 
-    public void PUSH_DATA() {
-        // Implementation for pushing data onto the stack
-    }
-
     public void OP_DROP() {
         stack.pop();
     }
@@ -163,22 +159,20 @@ public class Opcodes<T> {
 
     public void OP_CHECKSIG() {
         if (stack.size() < 2) {
-             stack.push(new byte[0]);
-             return;
+            stack.push(new byte[0]);
+            return;
         }
-        
+
         byte[] pubKey = stack.pop();
         byte[] signature = stack.pop();
 
-        
         String pubKeyStr = bytesToHex(pubKey);
         String sigStr = bytesToHex(signature);
 
-        
         if (sigStr.contains(pubKeyStr)) {
-            stack.push(new byte[]{1}); 
+            stack.push(new byte[] { 1 });
         } else {
-            stack.push(new byte[0]);   
+            stack.push(new byte[0]);
         }
     }
 
