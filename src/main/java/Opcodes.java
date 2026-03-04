@@ -119,9 +119,10 @@ public class Opcodes<T> {
         if (stack.isEmpty()) {
             throw new RuntimeException("El stack está vacío");
         }
-        byte[] top = (byte[]) stack.pop();
-        stack.push(top);
-        stack.push(top);
+        byte[] top = (byte[]) stack.peek();
+        byte[] copy = top.clone(); //Clonamos el array para evitar referencias compartidas
+        
+        stack.push(copy);
     }
 
     public void OP_EQUAL() {
