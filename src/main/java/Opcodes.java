@@ -176,6 +176,153 @@ public class Opcodes<T> {
         }
     }
 
+    public void OP_SWAP() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para swap");
+        } else {
+            byte[] a = stack.pop();
+            byte[] b = stack.pop();
+            stack.push(a);
+            stack.push(b);
+        }
+    }
+
+    public void OP_OVER() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para over");
+        } else {
+            byte[] a = stack.pop();
+            byte[] b = stack.pop();
+            stack.push(b);
+            stack.push(a);
+            stack.push(b);
+        }
+    }
+
+    public void OP_NOT() {
+        if (stack.isEmpty()) {
+            throw new RuntimeException("No hay elementos en el stack para NOT");
+        }
+        byte[] a = stack.pop();
+        if (isTrue(a)) {
+            stack.push(new byte[0]);
+        } else {
+            stack.push(new byte[] { 1 });
+        }
+    }
+
+    public void OP_BOOLAND() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para BOOLAND");
+        }
+        byte[] a = stack.pop();
+        byte[] b = stack.pop();
+        if (isTrue(a) && isTrue(b)) {
+            stack.push(new byte[] { 1 });
+        } else {
+            stack.push(new byte[0]);
+        }
+    }
+
+    public void OP_BOOLOR() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para BOOLOR");
+        }
+        byte[] a = stack.pop();
+        byte[] b = stack.pop();
+        if (isTrue(a) || isTrue(b)) {
+            stack.push(new byte[] { 1 });
+        } else {
+            stack.push(new byte[0]);
+        }
+    }
+
+    public void OP_ADD() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para ADD");
+        }
+        long a = bytesToLong(stack.pop());
+        long b = bytesToLong(stack.pop());
+        stack.push(longToBytes(a + b));
+    }
+
+    public void OP_SUB() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para SUB");
+        }
+        long a = bytesToLong(stack.pop());
+        long b = bytesToLong(stack.pop());
+        stack.push(longToBytes(b - a));
+    }
+
+    public void OP_LESSTHAN() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para LESSTHAN");
+        }
+        long a = bytesToLong(stack.pop());
+        long b = bytesToLong(stack.pop());
+        if (b < a) {
+            stack.push(new byte[] { 1 });
+        } else {
+            stack.push(new byte[0]);
+        }
+    }
+
+    public void OP_GREATERTHAN() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para GREATERTHAN");
+        }
+        long a = bytesToLong(stack.pop());
+        long b = bytesToLong(stack.pop());
+        if (b > a) {
+            stack.push(new byte[] { 1 });
+        } else {
+            stack.push(new byte[0]);
+        }
+    }
+
+    public void OP_LESSTHANOREQUAL() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para LESSTHANOREQUAL");
+        }
+        long a = bytesToLong(stack.pop());
+        long b = bytesToLong(stack.pop());
+        if (b <= a) {
+            stack.push(new byte[] { 1 });
+        } else {
+            stack.push(new byte[0]);
+        }
+    }
+
+    public void OP_GREATERTHANOREQUAL() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para GREATERTHANOREQUAL");
+        }
+        long a = bytesToLong(stack.pop());
+        long b = bytesToLong(stack.pop());
+        if (b >= a) {
+            stack.push(new byte[] { 1 });
+        } else {
+            stack.push(new byte[0]);
+        }
+    }
+
+    public void OP_NUMEQUALVERIFY() {
+        if (stack.size() < 2) {
+            throw new RuntimeException("No hay suficientes elementos en el stack para NUMEQUALVERIFY");
+        }
+        long a = bytesToLong(stack.pop());
+        long b = bytesToLong(stack.pop());
+        if (a == b) {
+            stack.push(new byte[] { 1 });
+        } else {
+            stack.push(new byte[0]);
+        }
+        OP_VERIFY();
+    }
+
+    // Métodos auxiliares
+
     private String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -192,6 +339,31 @@ public class Opcodes<T> {
         } else {
             return false;
         }
+    }
+
+    private boolean isTrue(byte[] data) {
+        if (data.length == 0) {
+            return false;
+        }
+        if (data.length == 1 && data[0] == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private long bytesToLong(byte[] data) {
+        if (data.length == 0) {
+            return 0;
+        }
+
+        return new java.math.BigInteger(data).longValue();
+    }
+
+    private byte[] longToBytes(long value) {
+        if (value == 0) {
+            return new byte[0];
+        }
+        return java.math.BigInteger.valueOf(value).toByteArray();
     }
 
 }
