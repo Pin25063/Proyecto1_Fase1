@@ -37,6 +37,19 @@ public class Opcodes<T> {
         opcodeMap.put("OP_EQUALVERIFY", this::OP_EQUALVERIFY);
         opcodeMap.put("OP_HASH160", this::OP_HASH160);
         opcodeMap.put("OP_CHECKSIG", this::OP_CHECKSIG);
+        opcodeMap.put("OP_CHECKSIGVERIFY", this::OP_CHECKSIGVERIFY);
+        opcodeMap.put("OP_SWAP", this::OP_SWAP);
+        opcodeMap.put("OP_OVER", this::OP_OVER);
+        opcodeMap.put("OP_NOT", this::OP_NOT);
+        opcodeMap.put("OP_BOOLAND", this::OP_BOOLAND);
+        opcodeMap.put("OP_BOOLOR", this::OP_BOOLOR);
+        opcodeMap.put("OP_ADD", this::OP_ADD);
+        opcodeMap.put("OP_SUB", this::OP_SUB);
+        opcodeMap.put("OP_LESSTHAN", this::OP_LESSTHAN);
+        opcodeMap.put("OP_GREATERTHAN", this::OP_GREATERTHAN);
+        opcodeMap.put("OP_LESSTHANOREQUAL", this::OP_LESSTHANOREQUAL);
+        opcodeMap.put("OP_GREATERTHANOREQUAL", this::OP_GREATERTHANOREQUAL);
+        opcodeMap.put("OP_NUMEQUALVERIFY", this::OP_NUMEQUALVERIFY);
     }
 
     public void OP_0() {
@@ -318,6 +331,11 @@ public class Opcodes<T> {
         } else {
             stack.push(new byte[0]);
         }
+        OP_VERIFY();
+    }
+
+    public void OP_CHECKSIGVERIFY() {
+        OP_CHECKSIG();
         OP_VERIFY();
     }
 
