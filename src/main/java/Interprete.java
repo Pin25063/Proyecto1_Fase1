@@ -15,7 +15,7 @@ public class Interprete {
     }
 
     public boolean execute(String script) {
-        
+
         stack.clear(); // Limpiamos la pila antes de empezar
         executionStack.clear();
         executionStack.push(true);
@@ -32,7 +32,7 @@ public class Interprete {
 
                 // --- CONTROL DE FLUJO ---
                 if (token.equals("OP_IF")) {
-                    if(stack.isEmpty()) {
+                    if (stack.isEmpty()) {
                         return false;
                     }
 
@@ -41,9 +41,20 @@ public class Interprete {
                     executionStack.push(cond);
 
                     i++;
+                    continue;
                 }
 
-                if (token.equals("OP_ELSE")) {
+                else if (token.equals("OP_NOTIF")) {
+                    if (stack.isEmpty())
+                        return false;
+                    byte[] condition = stack.pop();
+                    boolean cond = condition.length > 0 && !(condition.length == 1 && condition[0] == 0);
+                    executionStack.push(!cond);
+                    i++;
+                    continue;
+                }
+
+                else if (token.equals("OP_ELSE")) {
                     if (executionStack.isEmpty()) {
                         return false;
                     }
@@ -52,9 +63,10 @@ public class Interprete {
                     executionStack.push(!current);
 
                     i++;
+                    continue;
                 }
 
-                if (token.equals("OP_ENDIF")) {
+                else if (token.equals("OP_ENDIF")) {
                     if (executionStack.isEmpty()) {
                         return false;
                     }
@@ -62,6 +74,8 @@ public class Interprete {
                     executionStack.pop();
 
                     i++;
+
+                    continue;
                 }
 
                 // --- 1. LÓGICA PUSHDATA ---

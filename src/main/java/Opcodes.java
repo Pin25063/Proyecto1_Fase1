@@ -50,6 +50,7 @@ public class Opcodes<T> {
         opcodeMap.put("OP_LESSTHANOREQUAL", this::OP_LESSTHANOREQUAL);
         opcodeMap.put("OP_GREATERTHANOREQUAL", this::OP_GREATERTHANOREQUAL);
         opcodeMap.put("OP_NUMEQUALVERIFY", this::OP_NUMEQUALVERIFY);
+        opcodeMap.put("OP_RETURN", this::OP_RETURN);
     }
 
     public void OP_0() {
@@ -129,8 +130,8 @@ public class Opcodes<T> {
             throw new RuntimeException("El stack está vacío");
         }
         byte[] top = (byte[]) stack.peek();
-        byte[] copy = top.clone(); //Clonamos el array para evitar referencias compartidas
-        
+        byte[] copy = top.clone(); // Clonamos el array para evitar referencias compartidas
+
         stack.push(copy);
     }
 
@@ -338,6 +339,10 @@ public class Opcodes<T> {
     public void OP_CHECKSIGVERIFY() {
         OP_CHECKSIG();
         OP_VERIFY();
+    }
+
+    public void OP_RETURN() {
+        throw new RuntimeException("OP_RETURN ejecutado. Script explícitamente inválido.");
     }
 
     // Métodos auxiliares
