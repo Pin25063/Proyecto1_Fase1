@@ -4,15 +4,21 @@ import java.util.List;
 public class Interprete {
     private Stack<byte[]> stack;
     private Opcodes<byte[]> vm;
+    private Stack<Boolean> executionStack;
 
     public Interprete() {
         this.stack = new Stack<>();
         this.vm = new Opcodes<>(stack);
+        this.executionStack = new Stack<>();
+
+        executionStack.push(true);
     }
 
     public boolean execute(String script) {
-
+        
         stack.clear(); // Limpiamos la pila antes de empezar
+        executionStack.clear();
+        executionStack.push(true);
 
         // Convertimos el Array a Lista para poder usar .get(i) y manejar índices
         String[] tokensArray = script.trim().split("\\s+");
@@ -23,6 +29,40 @@ public class Interprete {
         try {
             while (i < tokens.size()) {
                 String token = tokens.get(i);
+
+                // --- CONTROL DE FLUJO ---
+                if (token.equals("OP_IF")) {
+                    if(stack.isEmpty()) {
+                        return false;
+                    }
+
+                    byte[] condition = stack.pop();
+                    boolean cond = condition.length > 0 && !(condition.length == 1 && condition[0] == 0);
+                    executionStack.push(cond);
+
+                    i++;
+                }
+
+                if (token.equals("OP_ELSE")) {
+                    if (executionStack.isEmpty()) {
+                        return false;
+                    }
+
+                    boolean current = executionStack.pop();
+                    executionStack.push(!current);
+
+                    i++;
+                }
+
+                if (token.equals("OP_ENDIF")) {
+                    if (executionStack.isEmpty()) {
+                        return false;
+                    }
+
+                    executionStack.pop();
+
+                    i++;
+                }
 
                 // --- 1. LÓGICA PUSHDATA ---
                 if (token.equals("PUSHDATA")) {
