@@ -36,4 +36,8 @@ public class Stack<T> {
     public int size() {
         return stack.size();
     }
+
+    public T get(int index){
+        return stack.get(index);
+    }
 }

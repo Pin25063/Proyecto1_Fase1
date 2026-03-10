@@ -5,6 +5,7 @@ public class Interprete {
     private Stack<byte[]> stack;
     private Opcodes<byte[]> vm;
     private Stack<Boolean> executionStack;
+    private boolean trace = false;
 
     public Interprete() {
         this.stack = new Stack<>();
@@ -116,6 +117,9 @@ public class Interprete {
                     System.out.println("Instrucción inválida: " + token);
                     return false;
                 }
+                if (this.trace) {
+                    printStack(token);
+                }
             }
         } catch (Exception e) {
             System.out.println("Error crítico durante ejecución: " + e.getMessage());
@@ -159,5 +163,19 @@ public class Interprete {
             data[i / 2] = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);
         }
         return data;
+    }
+
+    public void printStack(String token){
+        System.out.print("Token: " + String.format("%-15s", token));
+        System.out.print(" | Stack: [");
+        for (int j = 0; j < stack.size(); j++) {
+            System.out.print(Arrays.toString(stack.get(j)));
+            if (j < stack.size() - 1) System.out.print(", ");
+        }
+        System.out.println("]");
+    }
+
+    public void setTrace(boolean trace){
+        this.trace = trace;
     }
 }
