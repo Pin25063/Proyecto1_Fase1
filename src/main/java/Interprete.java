@@ -32,6 +32,7 @@ public class Interprete {
         try {
             while (i < tokens.size()) {
                 String token = tokens.get(i);
+                boolean shouldExecute = shouldExecute();
 
                 // --- CONTROL DE FLUJO ---
                 if (token.equals("OP_IF")) {
@@ -105,6 +106,11 @@ public class Interprete {
                     }
 
                     i++;
+                    continue;
+                }
+
+                else if (!shouldExecute) {
+                    i++; //si no se ejecuta el bloque solo se avanza al siguiente token
                     continue;
                 }
 
@@ -210,5 +216,14 @@ public class Interprete {
 
     public String getError() {
         return error;
+    }
+
+    private boolean shouldExecute() {
+        for (int e = 0; e< executionStack.size(); e++) {
+            if (!executionStack.get(e)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
