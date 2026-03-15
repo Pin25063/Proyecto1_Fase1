@@ -241,6 +241,66 @@ public class OpCodeTest {
     }
 
     @Test
+    public void OpNotTest() {
+        //not true
+        opcodes.OP_1();
+        opcodes.OP_NOT();
+        assertArrayEquals(new byte[0],stack.pop());
+
+        // not false
+        stack.clear();
+        opcodes.OP_0();
+        opcodes.OP_NOT();
+        assertArrayEquals(new byte[] { 1 }, stack.pop());
+    }
+
+    @Test
+    public void OpBoolAndTest() {
+        //true and true
+        opcodes.OP_1();
+        opcodes.OP_2();
+        opcodes.OP_BOOLAND();
+        assertArrayEquals(new byte[] { 1 }, stack.pop());
+
+        //true and false
+        stack.clear();
+        opcodes.OP_1();
+        opcodes.OP_0();
+        opcodes.OP_BOOLAND();
+        assertArrayEquals(new byte[0], stack.pop());
+
+        //false and false
+        stack.clear();
+        opcodes.OP_0();
+        opcodes.OP_0();
+        opcodes.OP_BOOLAND();
+        assertArrayEquals(new byte[0], stack.pop());
+    }
+
+    @Test
+    public void OpBoolOrTest() {
+        //true or true
+        opcodes.OP_1();
+        opcodes.OP_1();
+        opcodes.OP_BOOLOR();
+        assertArrayEquals(new byte [] { 1 }, stack.pop());
+
+        //true or false
+        stack.clear();
+        opcodes.OP_1();
+        opcodes.OP_0();
+        opcodes.OP_BOOLOR();
+        assertArrayEquals(new byte [] { 1 }, stack.pop());
+
+        //false or false
+        stack.clear();
+        opcodes.OP_0();
+        opcodes.OP_0();
+        opcodes.OP_BOOLOR();
+        assertArrayEquals(new byte [0], stack.pop());
+    }
+
+    @Test
     public void OpAddTest() {
         opcodes.OP_5();
         opcodes.OP_15();
@@ -360,6 +420,6 @@ public class OpCodeTest {
     public void OpReturnTest() {
         opcodes.OP_RETURN();
     }
-    
+
 }
 
