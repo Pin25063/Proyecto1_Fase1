@@ -6,6 +6,7 @@ public class Interprete {
     private Opcodes<byte[]> vm;
     private Stack<Boolean> executionStack;
     private boolean trace = false;
+    private String error;
 
     public Interprete() {
         this.stack = new Stack<>();
@@ -26,6 +27,7 @@ public class Interprete {
         List<String> tokens = Arrays.asList(tokensArray);
 
         int i = 0;
+        error = "";
 
         try {
             while (i < tokens.size()) {
@@ -41,6 +43,14 @@ public class Interprete {
                     boolean cond = condition.length > 0 && !(condition.length == 1 && condition[0] == 0);
                     executionStack.push(cond);
 
+                    if (trace) {
+                        if (cond) {
+                            System.out.println("OP_IF -> condición verdadera");
+                        } else {
+                            System.out.println("OP_IF -> condición falsa");
+                        }
+                    }
+
                     i++;
                     continue;
                 }
@@ -51,6 +61,14 @@ public class Interprete {
                     byte[] condition = stack.pop();
                     boolean cond = condition.length > 0 && !(condition.length == 1 && condition[0] == 0);
                     executionStack.push(!cond);
+                    if (trace) {
+                        if (!cond) {
+                            System.out.println("OP_NOTIF -> condición verdadera (ejecutando bloque)");
+                        } else {
+                            System.out.println("OP_NOTIF -> condición falsa (saltando bloque)");
+                        }
+                    }
+                    
                     i++;
                     continue;
                 }
@@ -63,6 +81,14 @@ public class Interprete {
                     boolean current = executionStack.pop();
                     executionStack.push(!current);
 
+                    if (trace) {
+                        if (!current) {
+                            System.out.println("OP_ELSE -> ejecutando bloque ELSE");
+                        } else {
+                            System.out.println("OP_ELSE -> saltando bloque ELSE");
+                        }
+                    }
+
                     i++;
                     continue;
                 }
@@ -74,8 +100,11 @@ public class Interprete {
 
                     executionStack.pop();
 
-                    i++;
+                    if (trace) {
+                        System.out.println("OP_ENDIF -> fin del bloque IF");
+                    }
 
+                    i++;
                     continue;
                 }
 
@@ -114,7 +143,7 @@ public class Interprete {
 
                 // --- 4. ERROR ---
                 else {
-                    System.out.println("Instrucción inválida: " + token);
+                    error = "Instrucción inválida: " + token;
                     return false;
                 }
                 if (this.trace) {
@@ -122,7 +151,7 @@ public class Interprete {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error crítico durante ejecución: " + e.getMessage());
+            error = "Error crítico durante ejecución: " + e.getMessage();
             return false;
         }
 
@@ -177,5 +206,9 @@ public class Interprete {
 
     public void setTrace(boolean trace){
         this.trace = trace;
+    }
+
+    public String getError() {
+        return error;
     }
 }
