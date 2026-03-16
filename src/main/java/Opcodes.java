@@ -1,3 +1,10 @@
+/**
+ * Clase encargada de implementar el conjunto de instrucciones opcodes
+ * Cada opcode representa una operaión que modifica la pila
+ * 
+ * @param <T> tipo de datos almacenados en la pila
+ */
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +19,10 @@ public class Opcodes<T> {
         init();
     }
 
+    /**
+     * Inicializa el mapa de opcodes con sus respectivas implementaciones
+     * Cada opcode se asocia a un método que implementa su lógica específica
+     */
     private void init() {
         opcodeMap.put("OP_0", this::OP_0);
         opcodeMap.put("OP_1", this::OP_1);
@@ -53,6 +64,9 @@ public class Opcodes<T> {
         opcodeMap.put("OP_RETURN", this::OP_RETURN);
     }
 
+    /**
+     * OP_0 a OP_16: Empujan el número correspondiente (0-16) en la pila como un array de bytes
+     */
     public void OP_0() {
         stack.push(new byte[] { 0 });
     }
@@ -125,6 +139,9 @@ public class Opcodes<T> {
         stack.pop();
     }
 
+    /**
+     * OP_DUP: Duplica el elemento en el tope de la pila y lo empuja nuevamente
+     */
     public void OP_DUP() {
         if (stack.isEmpty()) {
             throw new RuntimeException("El stack está vacío");
@@ -148,6 +165,9 @@ public class Opcodes<T> {
         }
     }
 
+    /**
+     * OP_VERIFY: Verifica que el elemento en el tope de la pila sea verdadero (no vacío y no [0])
+     */
     public void OP_VERIFY() {
         if (stack.isEmpty())
             throw new RuntimeException("Stack vacío en OP_VERIFY");
@@ -172,6 +192,11 @@ public class Opcodes<T> {
     public void OP_HASH160() {
     }
 
+    /** 
+     * OP_CHECKSIG: Simula la verificación de una firma digital. 
+     * Toma dos elementos del tope de la pila (firma y clave pública)
+     * y verifica si la firma "contiene" la clave pública (simulación simple).
+     */
     public void OP_CHECKSIG() {
         if (stack.size() < 2) {
             stack.push(new byte[0]);
@@ -202,6 +227,9 @@ public class Opcodes<T> {
         }
     }
 
+    /**
+     * OP_OVER: Duplica el segundo elemento desde el tope de la pila y lo empuja al tope
+     */
     public void OP_OVER() {
         if (stack.size() < 2) {
             throw new RuntimeException("No hay suficientes elementos en el stack para over");
@@ -322,6 +350,11 @@ public class Opcodes<T> {
         }
     }
 
+    /**
+     * OP_NUMEQUALVERIFY: Compara los dos elementos en el tope de la pila como números. 
+     * Si son iguales, empuja 1, sino empuja 0. 
+     * Luego verifica que el resultado sea verdadero (1) usando OP_VERIFY.
+     */
     public void OP_NUMEQUALVERIFY() {
         if (stack.size() < 2) {
             throw new RuntimeException("No hay suficientes elementos en el stack para NUMEQUALVERIFY");
@@ -341,12 +374,16 @@ public class Opcodes<T> {
         OP_VERIFY();
     }
 
+    /**
+     * OP_RETURN: Invalida el script 
+     * Detiene al intérprete y devuelve false.
+     */
     public void OP_RETURN() {
         throw new RuntimeException("OP_RETURN ejecutado. Script explícitamente inválido.");
     }
 
-    // Métodos auxiliares
 
+    // Métodos auxiliares
     private String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -382,7 +419,7 @@ public class Opcodes<T> {
 
         return new java.math.BigInteger(data).longValue();
     }
-
+    
     private byte[] longToBytes(long value) {
         if (value == 0) {
             return new byte[0];

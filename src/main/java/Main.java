@@ -1,3 +1,12 @@
+/**
+ * Clase principal del programa
+ * 
+ * Permite ejecutar scripts desde un archivo de texto
+ * 
+ * El usuario puede activar el modo trace para visualizar
+ * la evolución de la pila después de cada instrucción ejecutada
+ */
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;

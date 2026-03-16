@@ -1,3 +1,9 @@
+/**
+ * Clase principal encargada de interpretar el script de Bitcoin
+ * Implementa la lógica de control de flujo (OP_IF, OP_NOTIF, OP_ELSE, OP_ENDIF) y la delega la ejecución de opcodes
+ * Utiliza una pila para almacenar datos y otra para controlar la ejecución de los bloques condicionales
+ */
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +22,21 @@ public class Interprete {
         executionStack.push(true);
     }
 
+    /**
+     * Ejecuta un script de Bitcoin compuesto por una secuencia de instrucciones
+     * dado como cadena de texto separada por espacios. El script se procesa token por token utilizando 
+     * una pila interna y el conjunto de operaciones definidas en Opcodes.
+     * 
+     * @param script cadena de texto que representa el script a ejecutar
+     * Cada instrucción debe de estar seaparada por espacios
+     * @return true si el script finaliza correctamente y el resultado en el tope de la vila es verdadero
+     * False si ocurre algún error durante la ejecución o el resultado final es falso
+     * 
+     * @pre script no es nulo ni vacío
+     *      contiene instrucciones válidas según el conjunto de opcodes definidos o valores hexadecimales
+     * @post la pila contiene el resultado final de la ejecución del script 
+     *       si se da algún error, el atributo error contiene el mensaje correspondiente
+     */
     public boolean execute(String script) {
 
         stack.clear(); // Limpiamos la pila antes de empezar
@@ -164,7 +185,17 @@ public class Interprete {
         return verificarResultado();
     }
 
-    // Helper de verificación adicional
+    /**
+     * Verifica el resultado final de la ejecución del script
+     * Un script se considera válido únicamente si el tope de la pila representa un valor verdadero
+     * Un valor se considera falso si:
+     * - Es un array de bytes vacío
+     * - Es un array de bytes de longitud 1 con el único byte igual a 0
+     * @return true si el resultado final es verdadero, false en caso contrario
+     * 
+     * @pre la ejecución del script ha finalizado
+     * @post no se modifica el contenido de la pila
+     */
     private boolean verificarResultado() {
         if (stack.isEmpty())
             return false;
@@ -183,6 +214,18 @@ public class Interprete {
         return instruction.startsWith("<") && instruction.endsWith(">");
     }
 
+    /**
+     * Convierte una representación hexadecimal en un arreglo de bytes
+     * La cadena de entrada debe de estar delimitada por los símbolos "<>".
+     * Se eliminan los delimitadores y se convierte cada par de caracteres en su equivalente byte
+     * Si la longitud es impar, se agrega un 0 al inicio para completar el último byte
+     * @param instruction cadena de texto que representa un valor hexadecimal, delimitada por "<>"
+     * @return un arreglo de bytes correspondiente a la representación hexadecimal dada
+     * @throws NumberFormatException si la cadena contiene caracteres no válidos para hexadecimal
+     * 
+     * @pre instruction no es nulo y debe comenzar y terminar con "<>"
+     * @post devuelve un arreglo de bytes con los datos convertidos 
+     */
     private byte[] hexToBytes(String instruction) {
         String hex = instruction.substring(1, instruction.length() - 1); // ignora "<>"
 
@@ -200,6 +243,15 @@ public class Interprete {
         return data;
     }
 
+    /**
+     * Imprime el contenido actual de la pila junto con el token que se acaba de ejecutar
+     * Únicamente se utiliza cuando el modo trace está activado
+     * 
+     * @param token instrucción ejecutada antes de imprimir el estado de la pila
+     * 
+     * @pre token no es nulo
+     * @post el contenido de la pila no es modificado, únicamente se imprime
+     */
     public void printStack(String token){
         System.out.print("Token: " + String.format("%-15s", token));
         System.out.print(" | Stack: [");
