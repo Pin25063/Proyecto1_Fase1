@@ -1,11 +1,11 @@
+import java.util.ArrayList;
+
 /**
  * Implementación de una pila genérica utilizando un ArrayList
  * Sigue el principio LIFO (Last In, First Out
  * 
  * @param <T> tipo de datos almacenados en la pila
  */
-
-import java.util.ArrayList;
 
 public class Stack<T> {
     private ArrayList<T> stack;
@@ -16,6 +16,7 @@ public class Stack<T> {
 
     /**
      * Agrega un elemento en el tope de la pila
+     * 
      * @param item elemento a insertar en la pila
      * 
      * @pre item no es nulo
@@ -28,12 +29,13 @@ public class Stack<T> {
 
     /**
      * Elimina y devuelve el elemento en el tope de la pila
+     * 
      * @return el elemento eliminado del tope de la pila
      * @throws RuntimeException si la pila está vacía
      * 
      * @pre la pila no está vacía
      * @post el elemento en el tope es eliminado y devuelto
-     *      size() disminuye en 1
+     *       size() disminuye en 1
      */
     public T pop() {
         if (stack.isEmpty()) {
@@ -44,6 +46,7 @@ public class Stack<T> {
 
     /**
      * Devuelve el elemento en el tope de la pila sin eliminarlo
+     * 
      * @return el elemento en el tope de la pila
      * @throws RuntimeException si la pila está vacía
      * 
@@ -69,7 +72,7 @@ public class Stack<T> {
         return stack.size();
     }
 
-    public T get(int index){
+    public T get(int index) {
         return stack.get(index);
     }
 }

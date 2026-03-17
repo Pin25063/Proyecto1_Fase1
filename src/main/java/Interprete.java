@@ -1,11 +1,13 @@
-/**
- * Clase principal encargada de interpretar el script de Bitcoin
- * Implementa la lógica de control de flujo (OP_IF, OP_NOTIF, OP_ELSE, OP_ENDIF) y la delega la ejecución de opcodes
- * Utiliza una pila para almacenar datos y otra para controlar la ejecución de los bloques condicionales
- */
-
 import java.util.Arrays;
 import java.util.List;
+
+/**
+ * Clase principal encargada de interpretar el script de Bitcoin
+ * Implementa la lógica de control de flujo (OP_IF, OP_NOTIF, OP_ELSE, OP_ENDIF)
+ * y la delega la ejecución de opcodes
+ * Utiliza una pila para almacenar datos y otra para controlar la ejecución de
+ * los bloques condicionales
+ */
 
 public class Interprete {
     private Stack<byte[]> stack;
@@ -24,18 +26,23 @@ public class Interprete {
 
     /**
      * Ejecuta un script de Bitcoin compuesto por una secuencia de instrucciones
-     * dado como cadena de texto separada por espacios. El script se procesa token por token utilizando 
+     * dado como cadena de texto separada por espacios. El script se procesa token
+     * por token utilizando
      * una pila interna y el conjunto de operaciones definidas en Opcodes.
      * 
      * @param script cadena de texto que representa el script a ejecutar
-     * Cada instrucción debe de estar seaparada por espacios
-     * @return true si el script finaliza correctamente y el resultado en el tope de la vila es verdadero
-     * False si ocurre algún error durante la ejecución o el resultado final es falso
+     *               Cada instrucción debe de estar seaparada por espacios
+     * @return true si el script finaliza correctamente y el resultado en el tope de
+     *         la vila es verdadero
+     *         False si ocurre algún error durante la ejecución o el resultado final
+     *         es falso
      * 
      * @pre script no es nulo ni vacío
-     *      contiene instrucciones válidas según el conjunto de opcodes definidos o valores hexadecimales
-     * @post la pila contiene el resultado final de la ejecución del script 
-     *       si se da algún error, el atributo error contiene el mensaje correspondiente
+     *      contiene instrucciones válidas según el conjunto de opcodes definidos o
+     *      valores hexadecimales
+     * @post la pila contiene el resultado final de la ejecución del script
+     *       si se da algún error, el atributo error contiene el mensaje
+     *       correspondiente
      */
     public boolean execute(String script) {
 
@@ -90,7 +97,7 @@ public class Interprete {
                             System.out.println("OP_NOTIF -> condición falsa (saltando bloque)");
                         }
                     }
-                    
+
                     i++;
                     continue;
                 }
@@ -131,7 +138,7 @@ public class Interprete {
                 }
 
                 else if (!shouldExecute) {
-                    i++; //si no se ejecuta el bloque solo se avanza al siguiente token
+                    i++; // si no se ejecuta el bloque solo se avanza al siguiente token
                     continue;
                 }
 
@@ -187,10 +194,12 @@ public class Interprete {
 
     /**
      * Verifica el resultado final de la ejecución del script
-     * Un script se considera válido únicamente si el tope de la pila representa un valor verdadero
+     * Un script se considera válido únicamente si el tope de la pila representa un
+     * valor verdadero
      * Un valor se considera falso si:
      * - Es un array de bytes vacío
      * - Es un array de bytes de longitud 1 con el único byte igual a 0
+     * 
      * @return true si el resultado final es verdadero, false en caso contrario
      * 
      * @pre la ejecución del script ha finalizado
@@ -217,14 +226,20 @@ public class Interprete {
     /**
      * Convierte una representación hexadecimal en un arreglo de bytes
      * La cadena de entrada debe de estar delimitada por los símbolos "<>".
-     * Se eliminan los delimitadores y se convierte cada par de caracteres en su equivalente byte
-     * Si la longitud es impar, se agrega un 0 al inicio para completar el último byte
-     * @param instruction cadena de texto que representa un valor hexadecimal, delimitada por "<>"
-     * @return un arreglo de bytes correspondiente a la representación hexadecimal dada
-     * @throws NumberFormatException si la cadena contiene caracteres no válidos para hexadecimal
+     * Se eliminan los delimitadores y se convierte cada par de caracteres en su
+     * equivalente byte
+     * Si la longitud es impar, se agrega un 0 al inicio para completar el último
+     * byte
+     * 
+     * @param instruction cadena de texto que representa un valor hexadecimal,
+     *                    delimitada por "<>"
+     * @return un arreglo de bytes correspondiente a la representación hexadecimal
+     *         dada
+     * @throws NumberFormatException si la cadena contiene caracteres no válidos
+     *                               para hexadecimal
      * 
      * @pre instruction no es nulo y debe comenzar y terminar con "<>"
-     * @post devuelve un arreglo de bytes con los datos convertidos 
+     * @post devuelve un arreglo de bytes con los datos convertidos
      */
     private byte[] hexToBytes(String instruction) {
         String hex = instruction.substring(1, instruction.length() - 1); // ignora "<>"
@@ -244,7 +259,8 @@ public class Interprete {
     }
 
     /**
-     * Imprime el contenido actual de la pila junto con el token que se acaba de ejecutar
+     * Imprime el contenido actual de la pila junto con el token que se acaba de
+     * ejecutar
      * Únicamente se utiliza cuando el modo trace está activado
      * 
      * @param token instrucción ejecutada antes de imprimir el estado de la pila
@@ -252,17 +268,18 @@ public class Interprete {
      * @pre token no es nulo
      * @post el contenido de la pila no es modificado, únicamente se imprime
      */
-    public void printStack(String token){
+    public void printStack(String token) {
         System.out.print("Token: " + String.format("%-15s", token));
         System.out.print(" | Stack: [");
         for (int j = 0; j < stack.size(); j++) {
             System.out.print(Arrays.toString(stack.get(j)));
-            if (j < stack.size() - 1) System.out.print(", ");
+            if (j < stack.size() - 1)
+                System.out.print(", ");
         }
         System.out.println("]");
     }
 
-    public void setTrace(boolean trace){
+    public void setTrace(boolean trace) {
         this.trace = trace;
     }
 
@@ -271,7 +288,7 @@ public class Interprete {
     }
 
     private boolean shouldExecute() {
-        for (int e = 0; e< executionStack.size(); e++) {
+        for (int e = 0; e < executionStack.size(); e++) {
             if (!executionStack.get(e)) {
                 return false;
             }
