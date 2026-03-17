@@ -1,3 +1,4 @@
+
 /**
  * Clase encargada de implementar el conjunto de instrucciones opcodes
  * Cada opcode representa una operaión que modifica la pila
@@ -62,10 +63,13 @@ public class Opcodes<T> {
         opcodeMap.put("OP_GREATERTHANOREQUAL", this::OP_GREATERTHANOREQUAL);
         opcodeMap.put("OP_NUMEQUALVERIFY", this::OP_NUMEQUALVERIFY);
         opcodeMap.put("OP_RETURN", this::OP_RETURN);
+        opcodeMap.put("OP_CHECKMULTISIG", this::OP_CHECKMULTISIG);
+        opcodeMap.put("OP_CHECKMULTISIGVERIFY", this::OP_CHECKMULTISIGVERIFY);
     }
 
     /**
-     * OP_0 a OP_16: Empujan el número correspondiente (0-16) en la pila como un array de bytes
+     * OP_0 a OP_16: Empujan el número correspondiente (0-16) en la pila como un
+     * array de bytes
      */
     public void OP_0() {
         stack.push(new byte[] { 0 });
@@ -166,7 +170,8 @@ public class Opcodes<T> {
     }
 
     /**
-     * OP_VERIFY: Verifica que el elemento en el tope de la pila sea verdadero (no vacío y no [0])
+     * OP_VERIFY: Verifica que el elemento en el tope de la pila sea verdadero (no
+     * vacío y no [0])
      */
     public void OP_VERIFY() {
         if (stack.isEmpty())
@@ -192,8 +197,8 @@ public class Opcodes<T> {
     public void OP_HASH160() {
     }
 
-    /** 
-     * OP_CHECKSIG: Simula la verificación de una firma digital. 
+    /**
+     * OP_CHECKSIG: Simula la verificación de una firma digital.
      * Toma dos elementos del tope de la pila (firma y clave pública)
      * y verifica si la firma "contiene" la clave pública (simulación simple).
      */
@@ -216,6 +221,81 @@ public class Opcodes<T> {
         }
     }
 
+    public void OP_CHECKMULTISIG() {
+        if (stack.isEmpty()) {
+            throw new RuntimeException("Stack underflow en OP_CHECKMULTISIG (Falta N)");
+        }
+
+        // Sacar N (Cantidad total de llaves públicas)
+        int n = (int) bytesToLong(stack.pop());
+        if (stack.size() < n) {
+            throw new RuntimeException("Faltan llaves públicas en la pila");
+        }
+
+        // Sacar las N llaves públicas (lo hacemos en reversa para mantener el orden
+        // original de izquierda a derecha)
+        byte[][] pubKeys = new byte[n][];
+        for (int i = n - 1; i >= 0; i--) {
+            pubKeys[i] = stack.pop();
+        }
+
+        if (stack.isEmpty()) {
+            throw new RuntimeException("Stack underflow en OP_CHECKMULTISIG (Falta M)");
+        }
+
+        // Sacar M (Cantidad de firmas requeridas)
+        int m = (int) bytesToLong(stack.pop());
+        if (m > n) {
+            throw new RuntimeException("M (firmas requeridas) no puede ser mayor que N (llaves públicas)");
+        }
+        // Verificamos si hay suficientes elementos para las firmas y el elemento dummy
+        if (stack.size() < m + 1) {
+            throw new RuntimeException("Faltan firmas o el elemento dummy (OP_0)");
+        }
+
+        // Sacar las M firmas (en reversa para mantener orden original)
+        byte[][] signatures = new byte[m][];
+        for (int i = m - 1; i >= 0; i--) {
+            signatures[i] = stack.pop();
+        }
+
+        stack.pop(); // Sacamos el elemento Dummy y lo ignoramos
+
+        // Lógica de validación
+        int matchCount = 0;
+        int sigIndex = 0;
+        int pubIndex = 0;
+
+        // Iteramos comparando en orden
+        while (sigIndex < m && pubIndex < n) {
+            String sigStr = bytesToHex(signatures[sigIndex]);
+            String pubStr = bytesToHex(pubKeys[pubIndex]);
+
+            // Si la firma "contiene" la llave (nuestra lógica mock)
+            if (sigStr.contains(pubStr)) {
+                matchCount++;
+                sigIndex++; // Avanzamos a la siguiente firma
+                pubIndex++; // Avanzamos a la siguiente llave
+            } else {
+                // Si la firma no pertenece a esta llave, probamos con la siguiente llave
+                // pública
+                pubIndex++;
+            }
+        }
+
+        // Resultado final
+        if (matchCount == m) {
+            stack.push(new byte[] { 1 }); // TRUE
+        } else {
+            stack.push(new byte[0]); // FALSE
+        }
+    }
+
+    public void OP_CHECKMULTISIGVERIFY() {
+        OP_CHECKMULTISIG();
+        OP_VERIFY();
+    }
+
     public void OP_SWAP() {
         if (stack.size() < 2) {
             throw new RuntimeException("No hay suficientes elementos en el stack para swap");
@@ -228,7 +308,8 @@ public class Opcodes<T> {
     }
 
     /**
-     * OP_OVER: Duplica el segundo elemento desde el tope de la pila y lo empuja al tope
+     * OP_OVER: Duplica el segundo elemento desde el tope de la pila y lo empuja al
+     * tope
      */
     public void OP_OVER() {
         if (stack.size() < 2) {
@@ -351,8 +432,9 @@ public class Opcodes<T> {
     }
 
     /**
-     * OP_NUMEQUALVERIFY: Compara los dos elementos en el tope de la pila como números. 
-     * Si son iguales, empuja 1, sino empuja 0. 
+     * OP_NUMEQUALVERIFY: Compara los dos elementos en el tope de la pila como
+     * números.
+     * Si son iguales, empuja 1, sino empuja 0.
      * Luego verifica que el resultado sea verdadero (1) usando OP_VERIFY.
      */
     public void OP_NUMEQUALVERIFY() {
@@ -375,13 +457,12 @@ public class Opcodes<T> {
     }
 
     /**
-     * OP_RETURN: Invalida el script 
+     * OP_RETURN: Invalida el script
      * Detiene al intérprete y devuelve false.
      */
     public void OP_RETURN() {
         throw new RuntimeException("OP_RETURN ejecutado. Script explícitamente inválido.");
     }
-
 
     // Métodos auxiliares
     private String bytesToHex(byte[] bytes) {
@@ -419,7 +500,7 @@ public class Opcodes<T> {
 
         return new java.math.BigInteger(data).longValue();
     }
-    
+
     private byte[] longToBytes(long value) {
         if (value == 0) {
             return new byte[0];
